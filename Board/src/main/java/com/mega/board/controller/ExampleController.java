@@ -1,11 +1,17 @@
 package com.mega.board.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.mega.board.bean.ArtVO;
+import com.mega.board.bean.SubjectVO;
+import com.mega.board.mapper.TimeMapper;
 import com.mega.board.util.Color;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +21,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequestMapping("/ex/*") // localhost:port/ex 하위 uri을 읽을 수 있음
 public class ExampleController {
+	
+	@Autowired
+	private TimeMapper mapper;
 	
 	@GetMapping("")
 	public void nothing () {
@@ -65,5 +74,57 @@ public class ExampleController {
 		
 		return "index";
 	}
+	
+	// http://localhost:10000/ex/order?m=steack&a=10000로 입력
+	@GetMapping("order")
+	public String getOrder(String m, int a) {
+		String menu =m;
+		int amount=a;
+		
+		return "/index";
+	}
+	
+	@GetMapping("order2")
+	public String getOrder2(@RequestParam("m") String menu
+									,@RequestParam("a") int amount) {
+		log.info("-------------------------");
+		log.info("menu= "+menu+ " : amount= "+ amount);
+		log.info("-------------------------");
+		
+		return "/index";
+	}
+	
+	// java에서 html로 데이터 전송하기 : Model 활용
+	@GetMapping("query")
+	public void  query(@ModelAttribute("MyModel") ArtVO vo ) {
+		vo.setTitle("Everything");
+		vo.setArtist("검정치마");
+		//vo.setDesc("좋음");
+		vo.setDesc(mapper.getTime());
+	}
+	
+	@GetMapping("subject")
+	public void subject() {
+	}
+	
+	@GetMapping("subjectvo")
+	public String subjectVO(SubjectVO vo, Model model) {
+		model.addAttribute("subject",vo);
+		model.addAttribute("feeling", "지침..");
+		
+		return "ex/subjectTest";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }
