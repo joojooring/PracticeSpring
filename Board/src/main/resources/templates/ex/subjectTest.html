@@ -6,6 +6,12 @@
 </head>
 <body>
 	<h1 th:text="${feeling}">성적표</h1>
+<!-- 	<h1 >오늘의 기분 : <c:out value="${feeling}"/></h1> -->
+	<h1 >오늘의 기분 : <span th:text="${feeling}"></span></h1>
+	<h1 >오늘의 기분 : [[${feeling}]]</h1>
+	<h1 th:text="${'오늘의 기분 : '+feeling}"></h1>
+	
+	
 	<hr>
 	<table width="50%" border="1">
 		<tr>
@@ -19,7 +25,6 @@
 			<td th:text="*{eng}"></td>
 			<td th:text="*{kor}"></td>
 			<td th:text="*{math}"></td>
-			
 			<td th:text="*{eng+kor+math}"></td>
 			<td th:text="*{(eng+kor+math)/3F}"></td>
 		<tr>
