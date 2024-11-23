@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Board list 페이지</title>
+</head>
+<body>
+
+		<h1>게시판</h1>
+		<table border="1">
+			<thead>
+				<tr>
+					<th>No</th>
+					<th>Title</th>
+					<th>Content</th>
+					<th>Writer</th>
+					<th>Reg</th>
+					<th>Upd</th>
+				</tr>
+			</thead>
+			<tbody>
+				<th:block th:each="board:${list}">
+					<tr th:object="${board}">
+						<td th:text="*{bno}"></td>
+						<!-- <td th:text="*{title}"></td> -->
+						<td th:text="${board.title}"></td>
+						<td th:text="*{content}"></td>
+						<td th:text="*{writer}"></td>
+						<td th:text="*{regdate}"></td>
+						<td th:text="*{updatedate}"></td>
+					</tr>
+				</th:block>
+			</tbody>
+			<tfoot>
+			</tfoot>
+		</table>
+		
+		<br>
+		<a href="/board/write">글쓰기</a>
+</body>
+<script th:inline="javascript">
+	var msg = [[${msg}]];
+	if(msg){
+		alert(msg);
+	}
+</script>
+</html>

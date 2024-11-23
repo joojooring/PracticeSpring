@@ -77,5 +77,6 @@ public class BoardMapperTest {
 			log.info(Color.BLUE+result+"건 update 성공"+Color.END);
 		}
 	}
+
 	
 }
