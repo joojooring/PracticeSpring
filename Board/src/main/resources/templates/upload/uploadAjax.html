@@ -62,7 +62,7 @@ $("#uploadBtn").on("click", function(e){
 // 파일 체크 : 업로드 가능=true, 업로드 불가능= false
 function checkFile(filename, filesize){
 	// 1. file size 제한
-	let MAXSIZE = 50000000;
+	let MAXSIZE = 500000000;
 	
 	if(filesize > MAXSIZE){
 		alert("파일 사이즈가 50메가 이하여야 가능합니다.")

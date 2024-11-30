@@ -1,8 +1,11 @@
 package com.mega.board.controller;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -55,7 +58,7 @@ public class UploadController {
 	@PostMapping(value="uploadAjaxAction", produces=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody // 메서드 종료시 html로 가지않고 데이터로 리턴
 	public List uploadAjaxPost(MultipartFile[] uploadFile,Model model) {
-		log.info("[UploadController] uploadAjaxACTION called");
+		log.info("[UploadController] uploadAjaxAction called");
 		
 //		List fileList = new ArrayList();
 //		fileList.add("Hello");
@@ -63,13 +66,37 @@ public class UploadController {
 		List<AttachFileVO> fileList = new ArrayList();
 		
 		String uploadFolder = "C:/upload/temp";
+		String uploadFolderPath = getFolder();
+		
+		log.info("-------------------------------"+uploadFolderPath);
+		
+		
+		
+		//yyyy/mm/dd 경로 만들기
+		File uploadPath = new File(uploadFolder, getFolder());
+		
+		if(uploadPath.exists()) {// 디렉토리가 존재하면
+			log.info("----------------------------------------디렉토리 이미 존재");
+		} else {
+			uploadPath.mkdirs();
+		}
+		
 		
 		for(MultipartFile f: uploadFile) {
 			log.info("filename : " + f.getOriginalFilename());
 			log.info("file size : "+f.getSize());
 			
+			// uuid 적용
+			// network 상에서 각각의 개체를 식별하기 위해 사용
+			String uploadFileName = f.getOriginalFilename();
+			UUID uuid = UUID.randomUUID();
+			
+			uploadFileName = uuid.toString()+"_"+uploadFileName;
+			
 			// 파일 생성 (빈 파일) 
-			File saveFile = new File(uploadFolder, f.getOriginalFilename());
+			//File saveFile = new File(uploadFolder, f.getOriginalFilename());
+			//File saveFile = new File(uploadPath, f.getOriginalFilename());
+			File saveFile = new File(uploadPath, uploadFileName);
 			
 			// 파일 내용 채우기
 			try {
@@ -85,5 +112,12 @@ public class UploadController {
 			}
 		}
 		return fileList;
+	}	
+	private String getFolder() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		Date date = new Date();
+		String str = sdf.format(date);
+		
+		return str;
 	}
 }
