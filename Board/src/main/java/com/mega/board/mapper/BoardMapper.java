@@ -11,6 +11,7 @@ public interface BoardMapper {
 	
 	//게시글 목록 가져오는 함수 생성
 	public List<BoardVO> getList();
+	public List<BoardVO> getListWithKey(String type, String keyword);
 	
 	//게시글 INSERT
 	public int insert(BoardVO vo);

@@ -21,6 +21,10 @@ public class BoardDAO {
 	public List<BoardVO> getList(){
 		return mapper.getList();
 	}
+
+	public List<BoardVO> getListWithKey(String type, String keyword){
+		return mapper.getListWithKey(type, keyword);
+	}
 	
 	// 게시글 입력
 	public void register(BoardVO board) {

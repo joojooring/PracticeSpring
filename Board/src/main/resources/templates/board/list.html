@@ -2,20 +2,31 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="/css/bootstrap/css/bootstrap.css">
 <title>Board list 페이지</title>
+<style>
+	@media (max-width: 918px){
+		.hide{
+			display: none;
+		}
+		.no{width: 10%;}
+		.title{width: 70%;}
+		.writer{width: 20%;}
+	}
+</style>
 </head>
 <body>
-
+	<div class="col-md-8" style="margin: 0 auto;">
 		<h1>게시판</h1>
-		<table border="1">
+		<table border="1" class="table table-dark">
 			<thead>
 				<tr>
-					<th>No</th>
-					<th>Title</th>
-					<th>Content</th>
-					<th>Writer</th>
-					<th>Reg</th>
-					<th>Upd</th>
+					<th class="no">No</th>
+					<th class="title">Title</th>
+					<th class="hide">Content</th>
+					<th class="writer">Writer</th>
+					<th class="hide">Reg</th>
+					<th class="'hide">Upd</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -23,20 +34,34 @@
 					<tr th:object="${board}">
 						<td th:text="*{bno}"></td>
 						<!-- <td th:text="*{title}"></td> -->
-						<td th:text="${board.title}"></td>
-						<td th:text="*{content}"></td>
-						<td th:text="*{writer}"></td>
-						<td th:text="*{regdate}"></td>
-						<td th:text="*{updatedate}"></td>
+						<td><a th:text="${board.title}" th:href="@{/board/get(bno=*{bno})}"></a></td>
+						<td th:text="*{content}" class="hide"></td>
+						<td th:text="*{writer}" ></td>
+						<td th:text="*{regdate}" class="hide"></td>
+						<td th:text="*{updatedate}" class="hide"></td>
 					</tr>
 				</th:block>
 			</tbody>
 			<tfoot>
 			</tfoot>
 		</table>
+		<br>
+		<form method="get" action="/board/list">
+			<div style="text-align: center">
+					<select name="type">
+						<option value="T">제목</option>
+						<option value="C">내용</option>
+						<option value="W">작성자</option>
+					</select>
+					<input id="keyword" name="keyword" type="text">
+					<input type="submit" value="search"> 
+			</div>
+		</form>
+		
 		
 		<br>
 		<a href="/board/write">글쓰기</a>
+		</div>
 </body>
 <script th:inline="javascript">
 	var msg = [[${msg}]];

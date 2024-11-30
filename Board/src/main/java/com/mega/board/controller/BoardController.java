@@ -24,15 +24,23 @@ public class BoardController {
 
 
 	@GetMapping("list")
-	public void list(Model model) {
+	public void list(Model model, String type, String keyword) {
 		log.info("-----------------------------");
-		log.info(Color.BLUE+"[BoardController] list called"+Color.END);
+		log.info(Color.BLUE+"[BoardController] list called"+keyword+Color.END);
 		log.info("-----------------------------");
 		
 		// 람다식 외우자
-		dao.getList().forEach(board -> log.info(board.toString()));
+		//dao.getList().forEach(board -> log.info(board.toString()));
+//		model.addAttribute("list",dao.getList());
 		
-		model.addAttribute("list",dao.getList());
+		if(keyword == null) {
+			dao.getList().forEach(board -> log.info(board.toString()));
+			model.addAttribute("list", dao.getList());
+		} else {
+			model.addAttribute("list", dao.getListWithKey(type, keyword));
+		}
+		
+		
 	}
 	
 	@GetMapping("write")
