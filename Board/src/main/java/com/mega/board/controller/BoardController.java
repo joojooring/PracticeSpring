@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.mega.board.bean.BoardDAO;
 import com.mega.board.bean.BoardVO;
@@ -71,5 +72,59 @@ public class BoardController {
 		}
 		return "redirect:/board/list";
 	}
+	
+	// localhost:10000/board/get?bno=N을 호출했을 때 내용을 보여주는 페이지
+	// 리스트로 돌아가기 링크 클릭시 리스트로 이동
+	// 1. 해당 주소 클릭시 실행할 메서드 생성
+	// 2. 메서드 호출 시 정상적인 호출이 되었는지 확인하기 위해 메서드 호출 정상 메시지 출력 기능 추가
+	// 3. 매퍼로부터 bno에 해당하는 BoardVO 얻어오기
+	// 4. model에 얻어온 BoardVO 넣기
+	// 5. 페이지 이동
+	
+	@GetMapping("get")
+	public void get(Long bno, Model model) {
+		log.info("get called");
+		BoardVO board = dao.get(bno);
+		//model.addAttribute("board", board);
+		if( board !=null ) {
+			model.addAttribute("board", dao.get(bno));
+		}
+	}
+		
+		
+	// localhost:10000/board/remove?bno=N
+//		해당 글의 삭제 처리 수행 후 리스트로 돌아감
+//		리스트로 이동하면 삭제 성공시 삭제처리되었습니다. 삭제 실패 시 삭제에 실패하였습니다. 메세지 출력
+	@GetMapping("remove")		
+	public RedirectView remove(Long bno, RedirectAttributes rttr) {
+		if(dao.remove(bno)) {
+			rttr.addFlashAttribute("msg", " 글 삭제에 성공하였습니다.");
+		} else {
+			rttr.addFlashAttribute("msg", "삭제 실패하였습니다.");
+		}
+		return new RedirectView("list");
+	}
+	
+	@GetMapping("modify")
+	public void modify(Long bno, Model model) {
+		model.addAttribute("board", dao.get(bno));
+	}
+	
+	@PostMapping("modify")
+	public String modify (BoardVO board, RedirectAttributes rttr) {
+		if(dao.modify(board)) {
+			rttr.addFlashAttribute("msg", "업데이트에 성공하였습니다.");
+		} else {
+			rttr.addFlashAttribute("msg","업데이트에 실패하였습니다.");
+		}
+		return "redirect:/board/list";
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 }

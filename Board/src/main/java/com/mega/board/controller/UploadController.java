@@ -1,6 +1,10 @@
 package com.mega.board.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.mega.board.bean.AttachFileVO;
 
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnailator;
 
 @Controller // @RestController 이게 responsebody로 html로 안가고 데이터로 감
 @Slf4j
@@ -86,12 +91,17 @@ public class UploadController {
 			log.info("filename : " + f.getOriginalFilename());
 			log.info("file size : "+f.getSize());
 			
+			AttachFileVO attachFileVO = new AttachFileVO();
+			
 			// uuid 적용
 			// network 상에서 각각의 개체를 식별하기 위해 사용
 			String uploadFileName = f.getOriginalFilename();
 			UUID uuid = UUID.randomUUID();
 			
 			uploadFileName = uuid.toString()+"_"+uploadFileName;
+			attachFileVO.setFileName(uploadFileName);
+			attachFileVO.setUuid(uuid.toString());
+			attachFileVO.setUploadPath(uploadFolderPath);
 			
 			// 파일 생성 (빈 파일) 
 			//File saveFile = new File(uploadFolder, f.getOriginalFilename());
@@ -101,9 +111,28 @@ public class UploadController {
 			// 파일 내용 채우기
 			try {
 				f.transferTo(saveFile);				
+				
+				if(checkImageType(saveFile)) { //image이면
+					log.info("-----------> Image File" );
+					attachFileVO.setImage(true);
+
+					FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "s_"+uploadFileName));
+
+					InputStream in = new FileInputStream(saveFile);
+					Thumbnailator.createThumbnail(in, thumbnail, 100,100);
+					thumbnail.close();
+					in.close();
+				} else {
+					log.info("-----------> Not Image File");
+				}
+				
+				
 			} catch (Exception e){
 				e.printStackTrace();
 			}
+			
+			fileList.add(attachFileVO);
+			
 			try {
 				Thread.sleep(3000);
 			}
@@ -119,5 +148,16 @@ public class UploadController {
 		String str = sdf.format(date);
 		
 		return str;
+	}
+	
+	private boolean checkImageType(File file) {
+		try {
+			String contentType = Files.probeContentType(file.toPath());
+			log.info("------------> contentType : "+contentType);
+			return contentType.startsWith("image");
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

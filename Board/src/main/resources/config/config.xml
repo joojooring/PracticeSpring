@@ -4,5 +4,6 @@
 <configuration>
 	<typeAliases>
 		<typeAlias alias="boardVO" type="com.mega.board.bean.BoardVO"></typeAlias>
+		<typeAlias alias="attachFileVO" type="com.mega.board.bean.AttachFileVO"></typeAlias>
 	</typeAliases>
 </configuration>

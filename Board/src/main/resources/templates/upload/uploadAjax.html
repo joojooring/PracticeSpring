@@ -13,8 +13,10 @@
 	<hr>
 	<div class="uploadResult">
 		<ul>
+			<!-- 
 			<li>File1</li>
 			<li>File2</li>
+			 -->
 		</ul>
 	</div>
 	
@@ -55,6 +57,8 @@ $("#uploadBtn").on("click", function(e){
 		success: function(result){
 			alert("file upload OK!")
 			console.log(result);
+			inputFile.val(""); // 파일 보낸 후 초기화
+			showUploadFile(result);
 		}
 	})
 });
@@ -77,6 +81,29 @@ function checkFile(filename, filesize){
 		return false;
 	}
 	return true;
+}
+
+
+
+function showUploadFile(fileArray){
+	let uploadResult = $(".uploadResult ul");
+	
+	// 초기화 
+	let str = "";
+	
+	$(fileArray).each(function(i, obj){ // 첫번쨰 index, 두번쨰 내용
+		console.log("파일의 index : "+i);
+		console.log("파일의 index 와 obj: "+i,obj);
+		
+		if(obj.image){
+			str +="<li><img src='/img/image.png' width='32px'>"+obj.fileName+"</li>"
+		} else {
+			str +="<li><img src='/img/attach.png' width='32px'>"+obj.fileName+"</li>"
+		}
+	});
+	
+	uploadResult.append(str);
+	
 }
 </script>
 </html>
